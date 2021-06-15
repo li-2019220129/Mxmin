@@ -1,10 +1,12 @@
 <template>
-  
+  <div>
+      owe
+  </div>
 </template>
 
 <script>
 export default {
-name:'index',
+ name:'index',
 }
 </script>
 
