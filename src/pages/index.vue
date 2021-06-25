@@ -52,16 +52,72 @@
           <div class="swiper-button-next" slot="button-next"></div>
         </swiper>
       </div>
-      <div class="ads-box"></div>
-      <div class="banner"></div>
-      <div class="product-box"></div>
+      <div class="ads-box">
+        <a
+          :href="'/#/product/' + item.id"
+          v-for="(item, index) in adsList"
+          :key="index"
+        >
+          <img v-lazy="item.img" alt="" />
+        </a>
+      </div>
+      <div class="banner">
+        <a href="/#/product/30">
+          <img v-lazy="'/imgs/banner-1.png'" alt="" />
+        </a>
+      </div>
+    </div>
+    <div class="product-box">
+      <div class="container">
+        <h2>手机</h2>
+        <div class="wrapper">
+          <div class="banner-left">
+            <a href="/#/product/35"
+              ><img v-lazy="'/imgs/mix-alpha.jpg'" alt=""
+            /></a>
+          </div>
+          <div class="list-box">
+            <div class="list" v-for="(item, index1) in phoneList" :key="index1">
+              <div class="item" v-for="(item1, index2) in item" :key="index2">
+                <span v-bind:class="{ 'new-pro': index2 % 2 == 0 }">
+                  新品
+                </span>
+                <div class="item-img">
+                  <img v-lazy="item1.mainImage" alt="" />
+                </div>
+                <div class="item-info">
+                  <h3>{{ item1.name }}</h3>
+                  <p>{{ item1.subtitle }}</p>
+                  <p class="price" @click="addCart(item1.id)">
+                    {{ item1.price }}元
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <ServiceBar />
+    <modal
+      title="提示"
+      sureText="查看购物车"
+      btnType="1"
+      modalType="middle"
+      v-bind:showModal="showModal"
+      v-on:submit="goToCart"
+      v-on:cancel="showModal = false"
+    >
+      <template v-slot:body>
+        <p>商品添加成功！</p>
+      </template>
+    </modal>
   </div>
 </template>
 
 <script>
 import ServiceBar from '../components/ServiceBar.vue'
+import Modal from '../components/Modal.vue'
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import 'swiper/css/swiper.css'
 export default {
@@ -69,6 +125,7 @@ export default {
   components: {
     ServiceBar,
     swiper,
+    Modal,
     swiperSlide,
   },
   data() {
@@ -141,7 +198,60 @@ export default {
         [0, 0, 0, 0],
         [0, 0, 0, 0],
       ],
+      adsList: [
+        {
+          id: 33,
+          img: '/imgs/ads/ads-1.png',
+        },
+        {
+          id: 48,
+          img: '/imgs/ads/ads-2.jpg',
+        },
+        {
+          id: 45,
+          img: '/imgs/ads/ads-3.png',
+        },
+        {
+          id: 47,
+          img: '/imgs/ads/ads-4.jpg',
+        },
+      ],
+      phoneList: [],
+      showModal:false
     }
+  },
+  mounted() {
+    this.init()
+  },
+  methods: {
+    async init() {
+      let { list } = await this.axios.get('/products', {
+        params: {
+          categoryId: 100012,
+          pageSize: 14,
+        },
+      })
+      list = list.slice(6, 14)
+      this.phoneList = [list.slice(0, 4), list.slice(4, 8)]
+    },
+    addCart() {
+      this.showModal=true
+      // this.axios
+      //   .post('/carts', {
+      //     productId: id,
+      //     selected: true,
+      //   })
+      //   .then((res) => {
+      //     this.showModal = true
+      //     this.$store.dispatch('saveCartCount', res.cartTotalQuantity)
+      //   })
+      //   .catch(() => {
+      //     this.showModal = true
+      //   })
+    },
+    goToCart() {
+      this.$router.push('/cart')
+    },
   },
 }
 </script>
@@ -235,6 +345,101 @@ export default {
     .swiper-button-prev {
       position: absolute;
       left: 270px;
+    }
+  }
+  .ads-box {
+    @include flex();
+    width: 100%;
+    height: 200px;
+    margin-top: 14px;
+    margin-bottom: 31px;
+    a {
+      width: 296px;
+      height: 167px;
+    }
+  }
+  .banner {
+    margin-bottom: 50px;
+  }
+  .product-box {
+    background-color: $colorJ;
+    padding: 30px 0 50px 0;
+    h2 {
+      font-size: $fontF;
+      height: 21px;
+      line-height: 21px;
+      color: $colorB;
+      margin-bottom: 20px;
+    }
+    .wrapper {
+      display: flex;
+      .banner-left {
+        margin-right: 16px;
+        img {
+          width: 224px;
+          height: 619px;
+        }
+      }
+      .list-box {
+        flex: 1;
+        .list {
+          @include flex();
+          margin-bottom: 14px;
+          &:last-child {
+            margin-bottom: 0;
+          }
+          .item {
+            width: 236px;
+            height: 302px;
+            background-color: $colorG;
+            text-align: center;
+          }
+          span {
+            display: inline-block;
+            width: 67px;
+            height: 24px;
+            font-size: 14px;
+            line-height: 24px;
+            color: $colorG;
+            &.new-pro {
+              background-color: #7ecf68;
+            }
+            &.kill-pro {
+              background-color: #e82626;
+            }
+          }
+          .item-img {
+            img {
+              height: 195px;
+            }
+          }
+          .item-info {
+            h3 {
+              font-size: $fontJ;
+              color: $colorB;
+              line-height: $fontJ;
+              font-weight: bold;
+            }
+            p {
+              color: $colorD;
+              line-height: 13px;
+              margin: 6px auto 13px;
+            }
+            .price {
+              color: #f20a0a;
+              font-size: $fontJ;
+              font-weight: bold;
+              cursor: pointer;
+              &:after {
+                @include bgImg(22px, 22px, '/imgs/icon-cart-hover.png');
+                content: ' ';
+                margin-left: 5px;
+                vertical-align: middle;
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
