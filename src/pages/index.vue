@@ -217,7 +217,7 @@ export default {
         },
       ],
       phoneList: [],
-      showModal:false
+      showModal: false,
     }
   },
   mounted() {
@@ -234,20 +234,23 @@ export default {
       list = list.slice(6, 14)
       this.phoneList = [list.slice(0, 4), list.slice(4, 8)]
     },
-    addCart() {
-      this.showModal=true
-      // this.axios
-      //   .post('/carts', {
-      //     productId: id,
-      //     selected: true,
-      //   })
-      //   .then((res) => {
-      //     this.showModal = true
-      //     this.$store.dispatch('saveCartCount', res.cartTotalQuantity)
-      //   })
-      //   .catch(() => {
-      //     this.showModal = true
-      //   })
+    addCart(id) {
+      if (this.$cookie.get('userId')) {
+        this.axios
+          .post('/carts', {
+            productId: id,
+            selected: true,
+          })
+          .then((res) => {
+            this.showModal = true
+            this.$store.dispatch('saveCartCount', res.cartTotalQuantity)
+          })
+          .catch(() => {
+            this.showModal = true
+          })
+      } else {
+        this.$router.push({ name: 'login' })
+      }
     },
     goToCart() {
       this.$router.push('/cart')
