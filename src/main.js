@@ -6,12 +6,16 @@ import router from './router'
 import VueCookie from 'vue-cookie'
 import store from './store'
 import VueLazyLoad from 'vue-lazyload'
+import {Message} from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css';
 import './assets/scss/reset.scss'
+import 'swiper/css/swiper.css'
 Vue.use(VueAxios, axios)
 Vue.use(VueLazyLoad, {
   loading: '/imgs/loading-svg/loading-bars.svg',
 })
 Vue.use(VueCookie)
+Vue.prototype.$message=Message
 Vue.config.productionTip = false
 axios.defaults.baseURL = '/api'
 axios.defaults.timeout = 8000
@@ -27,13 +31,13 @@ axios.interceptors.response.use(
       }
       return Promise.reject(res)
     } else {
-      // Message.warning(res.msg)
+      Message.warning(res.msg)
       return Promise.reject(res)
     }
   },
   (error) => {
-    // let res = error.response
-    // Message.error(res.data.message)
+    let res = error.response
+    Message.error(res.data.message)
     return Promise.reject(error)
   }
 )

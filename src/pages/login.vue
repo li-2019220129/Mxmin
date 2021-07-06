@@ -12,7 +12,7 @@
             <span>帐号登录</span><span>|</span><span>扫码登录</span>
           </div>
           <div class="input">
-            <input type="text" placeholder="请输入帐号" v-model="username" />
+            <input type="text" placeholder="请输入用户名" v-model="username" />
           </div>
           <div class="input">
             <input
@@ -25,8 +25,8 @@
             <a href="javascript:;" class="btn" @click="login">登录</a>
           </div>
           <div class="tips">
-            <div class="sms" @click="register">手机短信登录/注册</div>
-            <div class="reg">立即注册<span>|</span>忘记密码？</div>
+            <div class="sms">手机短信登录/注册</div>
+            <div class="reg" @click="registerClick">立即注册<span>|</span>忘记密码？</div>
           </div>
         </div>
       </div>
@@ -57,6 +57,9 @@ export default {
     }
   },
   methods: {
+    registerClick(){
+       this.$router.push({name:'register'})
+    },
     login() {
       let { username, password } = this
       this.axios
@@ -77,17 +80,6 @@ export default {
         })
     },
     ...mapActions(['saveUserName']),
-    register() {
-      this.axios
-        .post('/user/register', {
-          username: 'admin1',
-          password: 'admin1',
-          email: 'admin1@163.com',
-        })
-        .then(() => {
-          this.$message.success('注册成功')
-        })
-    },
   },
 }
 </script>

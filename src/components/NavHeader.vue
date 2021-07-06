@@ -137,7 +137,9 @@ export default {
     ...mapState(['username', 'cartCount']),
   },
   mounted() {
-    this.getCartCount()
+    if (this.$cookie.get('userId')) {
+      this.getCartCount()
+    }
     this.getProductList()
   },
   filters: {
@@ -160,7 +162,13 @@ export default {
         })
     },
     goToCart() {
-      this.$router.push('/cart')
+      if (this.$cookie.get('userId')) {
+        this.$router.push('/cart')
+      } else {
+        this.$router.push({
+          name: 'login',
+        })
+      }
     },
     getCartCount() {
       this.axios.get('/carts/products/sum').then((res = 0) => {
@@ -172,8 +180,8 @@ export default {
     },
     logout() {
       this.axios.post('/user/logout').then(() => {
-        // this.$message.success('退出成功')
-        this.$cookie.set('userId', '', { expires: '-1' })
+        this.$message.success('退出成功')
+        this.$cookie.set('userId', '', { 'max-age': '-1' })
         this.$store.dispatch('saveUserName', '')
         this.$store.dispatch('saveCartCount', '0')
         this.$router.push({ name: 'login' })
