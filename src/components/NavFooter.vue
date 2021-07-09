@@ -15,7 +15,7 @@
 
 <script>
 export default {
-  name: 'nav-footer',
+  name: 'nav-footer'
 }
 </script>
 

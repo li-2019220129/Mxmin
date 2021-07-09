@@ -1,5 +1,10 @@
 <template>
   <div class="order-confirm">
+    <order-header title="订单确认">
+      <template v-slot:tip>
+        <span>请认真填写收货地址</span>
+      </template>
+    </order-header>
     <svg
       version="1.1"
       xmlns="http://www.w3.org/2000/svg"
@@ -223,6 +228,7 @@
 </template>
 <script>
 import Modal from './../components/Modal'
+import OrderHeader from './../components/OrderHeader'
 import _ from 'lodash'
 export default {
   name: 'order-confirm',
@@ -241,6 +247,7 @@ export default {
   },
   components: {
     Modal,
+    OrderHeader
   },
   mounted() {
     this.getAddressList()
@@ -266,7 +273,7 @@ export default {
       this.showEditModal = true
     },
     delAddress(item) {
-      //这步必须要深拷贝，不然会有bug
+      //这步必须要深拷贝，不然会有bug，v-model会影响到item，所以要是一个新对象
       this.checkedItem = _.cloneDeep(item)
       this.userAction = 2
       this.showDelModal = true
